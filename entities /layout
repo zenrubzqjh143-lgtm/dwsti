@@ -1,0 +1,253 @@
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
+import { createPageUrl } from './utils';
+import { 
+  Home, 
+  CreditCard, 
+  User, 
+  FileText, 
+  LogOut, 
+  Menu, 
+  X,
+  Users,
+  BarChart3,
+  BookOpen,
+  Megaphone,
+  LayoutDashboard,
+  Flame,
+  MessageSquare
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import NotificationBell from '@/components/notifications/NotificationBell';
+import FloatingChatWidget from '@/components/shared/FloatingChatWidget';
+
+export default function Layout({ children, currentPageName }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+      } catch (e) {
+        console.log('User not logged in');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadUser();
+  }, []);
+
+  const handleLogout = () => {
+    base44.auth.logout();
+  };
+
+  const isAdmin = user?.role === 'admin';
+
+  const studentNavItems = [
+    { name: 'Home', page: 'StudentDashboard', icon: Home },
+    { name: 'Application Status', page: 'ApplicationTracking', icon: FileText },
+    { name: 'Tuition Payments', page: 'TuitionPayments', icon: CreditCard },
+    { name: 'Courses', page: 'CourseCatalog', icon: BookOpen },
+    { name: 'Faculty', page: 'FacultyDirectory', icon: Users },
+    { name: 'Profile & Settings', page: 'Profile', icon: User },
+  ];
+
+  const adminNavItems = [
+    { name: 'Dashboard', page: 'AdminDashboard', icon: LayoutDashboard },
+    { name: 'Enrollment Requests', page: 'AdminEnrollmentRequests', icon: BookOpen },
+    { name: 'Students', page: 'AdminStudents', icon: Users },
+    { name: 'Payments', page: 'AdminPayments', icon: CreditCard },
+    { name: 'Courses', page: 'AdminCourses', icon: BookOpen },
+    { name: 'Faculty', page: 'FacultyDirectory', icon: Users },
+    { name: 'Communications', page: 'AdminAnnouncements', icon: Megaphone },
+    { name: 'Reports', page: 'AdminReports', icon: BarChart3 },
+  ];
+
+  const navItems = isAdmin ? adminNavItems : studentNavItems;
+
+  // Public pages that don't need authentication
+  const publicPages = ['LandingPage', 'Home'];
+  const isPublicPage = publicPages.includes(currentPageName);
+
+  if (loading && !isPublicPage) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-slate-50 flex items-center justify-center">
+        <div className="animate-pulse flex flex-col items-center gap-4">
+          <img 
+            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6984b1b2aa8e7825b365748f/f122bb7d0_605208489_122145210116412274_4522097487424797257_n1.jpg" 
+            alt="DWSTI Logo" 
+            className="w-16 h-16 rounded-full object-cover"
+          />
+          <p className="text-slate-400 text-sm">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Render public pages without header/footer
+  if (isPublicPage) {
+    return <>{children}</>;
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-slate-50">
+      {/* Header */}
+      <header className="bg-white/80 backdrop-blur-xl border-b border-slate-100 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6984b1b2aa8e7825b365748f/f122bb7d0_605208489_122145210116412274_4522097487424797257_n1.jpg" 
+                alt="DWSTI Logo" 
+                className="w-12 h-12 rounded-full object-cover shadow-lg"
+              />
+              <div className="hidden sm:block">
+                <h1 className="font-bold text-slate-800 text-lg tracking-tight">DWSTI</h1>
+                <p className="text-[10px] text-slate-400 -mt-1 tracking-wide">
+                  {isAdmin ? 'Admin Portal' : 'Student Portal'}
+                </p>
+              </div>
+            </div>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-1">
+              {navItems.map((item) => {
+                const isActive = currentPageName === item.page;
+                return (
+                  <Link
+                    key={item.page}
+                    to={createPageUrl(item.page)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      isActive
+                        ? 'bg-sky-50 text-sky-700'
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* User Menu */}
+            <div className="flex items-center gap-3">
+              {user && (
+                <>
+                  <NotificationBell userEmail={user.email} userRole={user.role} />
+                  <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="flex items-center gap-2 px-3">
+                      <Avatar className="w-8 h-8">
+                        <AvatarFallback className="bg-gradient-to-br from-sky-400 to-blue-500 text-white text-xs font-semibold">
+                          {user.full_name?.split(' ').map(n => n[0]).join('') || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="hidden sm:block text-sm font-medium text-slate-700">
+                        {user.full_name || 'User'}
+                      </span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-3 py-2 border-b border-slate-100">
+                      <p className="text-sm font-medium text-slate-900">{user.full_name}</p>
+                      <p className="text-xs text-slate-500">{user.email}</p>
+                      <span className={`inline-block mt-1 px-2 py-0.5 text-[10px] font-medium rounded-full ${
+                        isAdmin ? 'bg-amber-100 text-amber-700' : 'bg-sky-100 text-sky-700'
+                      }`}>
+                        {isAdmin ? 'Administrator' : 'Student'}
+                      </span>
+                    </div>
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-600 cursor-pointer">
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                </>
+              )}
+
+              {/* Mobile Menu Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden border-t border-slate-100 bg-white">
+            <nav className="max-w-7xl mx-auto px-4 py-3 space-y-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = currentPageName === item.page;
+                return (
+                  <Link
+                    key={item.page}
+                    to={createPageUrl(item.page)}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                      isActive
+                        ? 'bg-sky-50 text-sky-700'
+                        : 'text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        )}
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {children}
+      </main>
+
+      {/* Floating Chat Widget - Only for students */}
+      {!isAdmin && <FloatingChatWidget />}
+
+      {/* Footer */}
+      <footer className="border-t border-slate-100 bg-white/50 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <img 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6984b1b2aa8e7825b365748f/f122bb7d0_605208489_122145210116412274_4522097487424797257_n1.jpg" 
+                alt="DWSTI Logo" 
+                className="w-6 h-6 rounded-full object-cover"
+              />
+              <span className="text-xs text-slate-400">
+                Don Carlos Bukidnon School of Theology International Inc.
+              </span>
+            </div>
+            <p className="text-xs text-slate-400">
+              © 2026 DWSTI. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
