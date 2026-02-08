@@ -1,0 +1,79 @@
+{
+  "name": "Payment",
+  "type": "object",
+  "properties": {
+    "student_email": {
+      "type": "string"
+    },
+    "student_name": {
+      "type": "string"
+    },
+    "enrollment_id": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "payment_type": {
+      "type": "string",
+      "enum": [
+        "entrance",
+        "school_project",
+        "graduation",
+        "toga",
+        "cpe",
+        "tuition_installment"
+      ],
+      "description": "Type of fee being paid"
+    },
+    "installment_number": {
+      "type": "number",
+      "description": "For tuition installments"
+    },
+    "payment_method": {
+      "type": "string",
+      "enum": [
+        "gcash",
+        "maya",
+        "bank_transfer",
+        "cash"
+      ],
+      "default": "gcash"
+    },
+    "reference_number": {
+      "type": "string"
+    },
+    "proof_url": {
+      "type": "string",
+      "description": "Student payment proof image URL"
+    },
+    "receipt_url": {
+      "type": "string",
+      "description": "Admin uploaded receipt image URL"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "admin_notes": {
+      "type": "string"
+    },
+    "approved_by": {
+      "type": "string"
+    },
+    "approved_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "student_email",
+    "amount",
+    "payment_type"
+  ]
+}
