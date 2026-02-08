@@ -1,0 +1,56 @@
+{
+  "name": "Announcement",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "normal",
+        "high",
+        "urgent"
+      ],
+      "default": "normal"
+    },
+    "target_audience": {
+      "type": "string",
+      "enum": [
+        "all",
+        "students",
+        "specific_course"
+      ],
+      "default": "all"
+    },
+    "course_id": {
+      "type": "string",
+      "description": "If targeting specific course"
+    },
+    "publish_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published",
+        "archived"
+      ],
+      "default": "draft"
+    }
+  },
+  "required": [
+    "title",
+    "content"
+  ]
+}
