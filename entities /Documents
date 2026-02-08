@@ -1,0 +1,77 @@
+{
+  "name": "Course",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Course name"
+    },
+    "code": {
+      "type": "string",
+      "description": "Course code"
+    },
+    "description": {
+      "type": "string",
+      "description": "Course description"
+    },
+    "tuition_fee": {
+      "type": "number",
+      "description": "Total tuition fee"
+    },
+    "entrance_fee": {
+      "type": "number",
+      "default": 3000
+    },
+    "school_project_fee": {
+      "type": "number",
+      "default": 3500
+    },
+    "graduation_fee": {
+      "type": "number",
+      "default": 3000
+    },
+    "toga_fee": {
+      "type": "number",
+      "default": 1000
+    },
+    "cpe_fee": {
+      "type": "number",
+      "default": 700
+    },
+    "installment_count": {
+      "type": "number",
+      "default": 3,
+      "description": "Number of installments for tuition"
+    },
+    "duration_months": {
+      "type": "number",
+      "description": "Course duration in months"
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of prerequisite course IDs"
+    },
+    "related_courses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of related course IDs"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "name",
+    "tuition_fee"
+  ]
+}
