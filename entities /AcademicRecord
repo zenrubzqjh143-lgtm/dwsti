@@ -1,0 +1,51 @@
+{
+  "name": "AcademicRecord",
+  "type": "object",
+  "properties": {
+    "student_email": {
+      "type": "string",
+      "description": "Student email reference"
+    },
+    "course_id": {
+      "type": "string",
+      "description": "Course ID reference"
+    },
+    "course_name": {
+      "type": "string"
+    },
+    "semester": {
+      "type": "string",
+      "description": "e.g., Fall 2025, Spring 2026"
+    },
+    "grade": {
+      "type": "string",
+      "enum": [
+        "A",
+        "A-",
+        "B+",
+        "B",
+        "B-",
+        "C+",
+        "C",
+        "C-",
+        "D",
+        "F",
+        "P",
+        "IP"
+      ],
+      "description": "Grade received or IP for In Progress"
+    },
+    "credits": {
+      "type": "number",
+      "description": "Course credits"
+    },
+    "remarks": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "student_email",
+    "course_id",
+    "course_name"
+  ]
+}
