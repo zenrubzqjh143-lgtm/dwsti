@@ -1,0 +1,120 @@
+{
+  "name": "Enrollment",
+  "type": "object",
+  "properties": {
+    "student_email": {
+      "type": "string",
+      "description": "Student email reference"
+    },
+    "student_name": {
+      "type": "string"
+    },
+    "course_id": {
+      "type": "string",
+      "description": "Course ID reference"
+    },
+    "course_name": {
+      "type": "string"
+    },
+    "enrollment_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "total_fees": {
+      "type": "number",
+      "description": "Total amount to pay"
+    },
+    "amount_paid": {
+      "type": "number",
+      "default": 0
+    },
+    "remaining_balance": {
+      "type": "number"
+    },
+    "entrance_fee_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid"
+      ],
+      "default": "pending"
+    },
+    "school_project_fee_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid"
+      ],
+      "default": "pending"
+    },
+    "graduation_fee_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid"
+      ],
+      "default": "pending"
+    },
+    "toga_fee_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid"
+      ],
+      "default": "pending"
+    },
+    "cpe_fee_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "paid"
+      ],
+      "default": "pending"
+    },
+    "tuition_installments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "installment_number": {
+            "type": "number"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "paid"
+            ]
+          }
+        }
+      }
+    },
+    "next_due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "next_due_amount": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "completed",
+        "dropped"
+      ],
+      "default": "active"
+    }
+  },
+  "required": [
+    "student_email",
+    "course_id"
+  ]
+}
